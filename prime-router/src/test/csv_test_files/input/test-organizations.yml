@@ -7,9 +7,7 @@
         topic: covid-19
         schema: test-schema
         jurisdictionalFilter: [ "matches(observation, covid-19:pos)", "matches(state,AZ)" ]
-#OLD        jurisdictionalFilter: {observation: covid-19:pos, state: AZ}
         transforms: {deidentify: false}
-        address: http://localhost:1181/
         format: CSV
 
   # Output to a deidentified schema
@@ -20,7 +18,5 @@
         topic: covid-19
         schema: federal-test-schema
         jurisdictionalFilter: [ "matches(observation, covid-19:.*)", "matches(state, .*)" ]
-#OLD        jurisdictionalFilter: {observation: covid-19:.*, state: .*}
         transforms: {deidentify: true}
-        address: http://localhost:1381/
         format: CSV

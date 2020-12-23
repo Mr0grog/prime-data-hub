@@ -25,11 +25,11 @@
           numberPerDay: 1440 # Every minute
           initialBatch: 00:00
           timeZone: ARIZONA
-        transport:
-            type: SFTP
-            host: sftp
-            port: 22
-            filePath: ./upload
+        transports:
+            - type: SFTP
+              host: sftp
+              port: 22
+              filePath: ./upload
         format: CSV
       - name: elr-prod
         topic: covid-19
@@ -77,7 +77,6 @@
         schema: sample/phd1-sample
         jurisdictionalFilter: [ "matches(observation, covid-19:pos)", "matches(state, AZ)"]
         transforms: {deidentify: false}
-        address: http://localhost:1181/
         format: CSV
 
 

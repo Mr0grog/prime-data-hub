@@ -6,6 +6,7 @@ import gov.cdc.prime.router.ClientSource
 import gov.cdc.prime.router.Report
 import gov.cdc.prime.router.ReportId
 import gov.cdc.prime.router.ReportSource
+import gov.cdc.prime.router.Secrets
 import gov.cdc.prime.router.Source
 import gov.cdc.prime.router.TestSource
 import gov.cdc.prime.router.azure.db.Tables.TASK
@@ -219,9 +220,9 @@ class DatabaseAccess(private val connection: Connection = getConnection()) {
         private val hikariDataSource: HikariDataSource by lazy {
             DriverManager.registerDriver(Driver())
 
-            val password = System.getenv(passwordVariable)
-            val user = System.getenv(userVariable)
-            val databaseUrl = System.getenv(databaseVariable)
+            val password = Secrets["postgres", passwordVariable]
+            val user = Secrets["postgres", userVariable]
+            val databaseUrl = Secrets[databaseVariable]
             val config = HikariConfig()
             config.jdbcUrl = databaseUrl
             config.username = user

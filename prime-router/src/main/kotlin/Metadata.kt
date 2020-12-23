@@ -20,9 +20,7 @@ object Metadata {
     private const val valuesetsSubdirectory = "valuesets"
     private const val tableSubdirectory = "tables"
 
-    private val PRIME_ENVIRONMENT = System.getenv("PRIME_ENVIRONMENT") ?: ""
-
-    private val ext = if (PRIME_ENVIRONMENT.isNotEmpty()) "-" + PRIME_ENVIRONMENT else PRIME_ENVIRONMENT
+    private val ext = if (Secrets["PRIME_ENVIRONMENT"].isNotEmpty()) "-" + Secrets["PRIME_ENVIRONMENT"] else Secrets["PRIME_ENVIRONMENT"]
 
     private val organizationsList = "organizations$ext.yml"
 

@@ -1,6 +1,7 @@
 package gov.cdc.prime.router.transport
 
 import gov.cdc.prime.router.SFTPTransportType
+import gov.cdc.prime.router.Secrets
 import gov.cdc.prime.router.TransportType
 import gov.cdc.prime.router.azure.DatabaseAccess
 import net.schmizz.sshj.SSHClient
@@ -19,7 +20,8 @@ class SftpTransport : ITransport {
 
         val sftpTransportType = transportType as SFTPTransportType
 
-        val (user, pass) = lookupCredentials(orgName)
+        val user = Secrets[orgName, "user"]
+        val pass = Secrets[orgName, "pass"]
 
         val fileDir = sftpTransportType.filePath.removeSuffix("/")
 
@@ -33,19 +35,6 @@ class SftpTransport : ITransport {
         success = true
 
         return success
-    }
-
-    private fun lookupCredentials(orgName: String): Pair<String, String> {
-
-        val envVarLabel = orgName.replace(".", "__").replace('-', '_').toUpperCase()
-
-        val user = System.getenv("${envVarLabel}__USER") ?: ""
-        val pass = System.getenv("${envVarLabel}__PASS") ?: ""
-
-        if (user.isNullOrBlank() || pass.isNullOrBlank())
-            error("Unable to find SFTP credentials for $orgName")
-
-        return Pair(user, pass)
     }
 
     private fun uploadFile(

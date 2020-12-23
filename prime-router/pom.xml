@@ -319,7 +319,7 @@
                     </generator>
                 </configuration>
             </plugin>
-          <plugin>
+           <plugin>
                 <groupId>com.github.gantsign.maven</groupId>
                 <artifactId>ktlint-maven-plugin</artifactId>
                 <version>1.7.0</version>
@@ -448,11 +448,17 @@
             <version>3.5</version>
         </dependency>
 
-<dependency>
-    <groupId>com.hierynomus</groupId>
-    <artifactId>sshj</artifactId>
-    <version>0.27.0</version>
-</dependency>     
+        <dependency>
+            <groupId>com.hierynomus</groupId>
+            <artifactId>sshj</artifactId>
+            <version>0.27.0</version>
+        </dependency>     
+
+        <dependency>
+            <groupId>com.bettercloud</groupId>
+            <artifactId>vault-java-driver</artifactId>
+            <version>5.1.0</version>
+        </dependency>
 
         <dependency>
             <groupId>org.apache.commons</groupId>
