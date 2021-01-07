@@ -206,7 +206,6 @@ then
                               --name $pg_server_name \
                               --auto-grow Enabled \
                               --minimal-tls-version TLS1_2 \
-                              --public-network-access Disabled \
                               --admin-user prime \
                               --admin-password $pg_admin_pwd \
                               --sku-name GP_Gen5_4 \
@@ -323,3 +322,7 @@ az functionapp config access-restriction add --resource-group $resource_group \
 # AZ_PHD__ELR_PROD__PASS=**** 
 # AZ_PHD__ELR_TEST__USER=****
 # AZ_PHD__ELR_TEST__PASS=****
+# AZ_PHD__HL7_TEST__USER=****
+# AZ_PHD__HL7_TEST__PASS=****
+# AZ_PHD__HL7_PROD__USER=****
+# AZ_PHD__HL7_PROD__PASS=****
