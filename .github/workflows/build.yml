@@ -3,6 +3,8 @@ name: Prime Data Hub
 on:
   pull_request:
     branches: [ master, production ]
+    paths-ignore:
+      - 'prime-router/docs/**'
 
 defaults:
   run:
@@ -13,7 +15,7 @@ jobs:
     # Do not run on PRs from forks to prevent workflow abuse.
     # NOTE: changing this condition *may* require adjusting secrets usage in
     # the workflow steps below.
-    if: github.event.pull_request.head.repo.full_name == github.repository
+    # if: github.event.pull_request.head.repo.full_name == github.repository
     runs-on: ubuntu-latest
 
     steps:
@@ -54,3 +56,40 @@ jobs:
 
       - name: Build Docker Image
         run: docker build . --file Dockerfile --tag ${{ env.ACR_REPO }}/${{ env.PREFIX }}:latest
+      
+      - name: Save Build Target
+        uses: actions/upload-artifact@v2
+        with:
+          name: build_target
+          path: prime-router/target
+
+  generate_docs:
+    name: Generate Docs
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Restore Build Target
+        uses: actions/download-artifact@v2
+        with:
+          name: build_target
+
+      - run: ./prime --generate-docs
+
+      - name: Check for Uncommited Docs
+        id: check_changes
+        run: |
+          CHANGED_FILES=$(git diff docs --short)
+          if [[ -n "$CHANGED_FILES" ]]; then
+            echo "Updated documentation:"
+            git diff docs
+
+            # End with an error
+            false
+          fi
+      
+      - name: Commit Changes
+        if: ${{ steps.check_changes.outcome == 'failure' }}
+        run: |
+          git add docs
+          git commit -m 'Generate updated docs'
+          git push
