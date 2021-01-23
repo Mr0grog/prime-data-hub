@@ -63,17 +63,36 @@ jobs:
           name: build_target
           path: prime-router/target
 
-  generate_docs:
-    name: Generate Docs
+  update_docs:
+    name: Update Docs
     needs: build
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/checkout@v2
+
       - name: Restore Build Target
         uses: actions/download-artifact@v2
         with:
           name: build_target
 
-      - run: ./prime --generate-docs
+      - name: Log local information
+        run: |
+          echo 'Working directory:'
+          pwd
+          echo ''
+          echo 'Parent directory contents:'
+          ls -la ..
+          echo ''
+          echo 'Directory contents:'
+          ls -la
+      
+      - name: 'Log target'
+        run: |
+          echo 'Target directory:'
+          ls -la ./target
+
+      - name: Generate New Docs
+        run: './prime --generate-docs'
 
       - name: Check for Uncommited Docs
         id: check_changes
