@@ -76,21 +76,10 @@ jobs:
           name: build_target
           path: prime-router/target
 
-      - name: Log local information
-        run: |
-          echo 'Working directory:'
-          pwd
-          echo ''
-          echo 'Parent directory contents:'
-          ls -la ..
-          echo ''
-          echo 'Directory contents:'
-          ls -la
-      
-      - name: 'Log target'
-        run: |
-          echo 'Target directory:'
-          ls -la ./target
+      - name: Setup JDK
+        uses: actions/setup-java@v1.4.3
+        with:
+           java-version: 11
 
       - name: Generate New Docs
         run: './prime --generate-docs'
