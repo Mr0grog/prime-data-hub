@@ -107,6 +107,9 @@ jobs:
       - name: Commit Changes
         if: ${{ steps.check_changes.outcome == 'failure' }}
         run: |
+          git config user.name 'GitHub Actions Bot'
+          git config user.email 'github.actions.bot@example.com'
+
           git add docs
           git commit -m 'Generate updated docs'
           git push
