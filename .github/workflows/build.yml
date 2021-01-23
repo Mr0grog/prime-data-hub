@@ -76,6 +76,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
+        with:
+          # Explicitly use the head_ref here (which is a branch name, rather
+          # than a commit hash) so we can commit and push back to it.
+          ref: ${{ github.head_ref }}
 
       - name: Setup JDK
         uses: actions/setup-java@v1.4.3
