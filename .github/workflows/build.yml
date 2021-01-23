@@ -93,7 +93,10 @@ jobs:
           path: prime-router/target
 
       - name: Generate New Docs
-        run: './prime --generate-docs'
+        run: |
+          # Clean the docs before regenerating
+          rm -rf docs/schema_documentation/*
+          ./prime --generate-docs
 
       - name: Check for Uncommited Docs
         id: check_changes
@@ -104,8 +107,18 @@ jobs:
           if [[ -n "$DIFF" ]]; then
             echo "Updated documentation:"
             echo "$DIFF"
-            echo ::set-output name=diff::$DIFF
-            echo ::set-output name=files::$CHANGED_FILES
+
+            # Escape line breaks so they show up in comments.
+            DIFF_ESCAPED="$DIFF"
+            DIFF_ESCAPED="${DIFF_ESCAPED//'%'/'%25'}"
+            DIFF_ESCAPED="${DIFF_ESCAPED//$'\n'/'%0A'}"
+            DIFF_ESCAPED="${DIFF_ESCAPED//$'\r'/'%0D'}"
+            echo "::set-output name=diff::$DIFF_ESCAPED"
+            FILES_ESCAPED="$CHANGED_FILES"
+            FILES_ESCAPED="${FILES_ESCAPED//'%'/'%25'}"
+            FILES_ESCAPED="${FILES_ESCAPED//$'\n'/'%0A'}"
+            FILES_ESCAPED="${FILES_ESCAPED//$'\r'/'%0D'}"
+            echo "::set-output name=files::$FILES_ESCAPED"
 
             # End with an error
             false
@@ -128,10 +141,9 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
           issue-number: ${{ github.event.number }}
           body: |
-            The changes you’ve made modify the documentation, but you haven’t
-            included new generated documentation in your commits.
+            The changes you’ve made modify the documentation, but you haven’t included new generated documentation in your commits!
 
-            Run `./prime --generate-docs` to generate updated documentation.
+            Please run `./prime --generate-docs` to generate updated documentation, then commit the results.
 
             Expected changes in files:
 
