@@ -105,6 +105,7 @@ jobs:
             echo "Updated documentation:"
             echo "$DIFF"
             echo ::set-output name=diff::$DIFF
+            echo ::set-output name=files::$CHANGED_FILES
 
             # End with an error
             false
@@ -132,8 +133,13 @@ jobs:
 
             Run `./prime --generate-docs` to generate updated documentation.
 
-            Expected changes:
+            Expected changes in files:
 
-            ```diff
-            ${{ steps.check_changes.outputs.diff }}
+            ```sh
+            ${{ steps.check_changes.outputs.files }}
             ```
+
+      - name: Fail if there were changes
+        if: ${{ steps.check_changes.outcome == 'failure' }}
+        run: |
+          false
