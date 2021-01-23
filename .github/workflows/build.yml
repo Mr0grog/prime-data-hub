@@ -51,6 +51,13 @@ jobs:
         with:
            java-version: 11
       
+      - name: Cache Maven Dependencies
+        uses: actions/cache@v2
+        with:
+          path: ~/.m2
+          key: ${{ runner.os }}-maven-${{ hashFiles('prime-router/pom.xml') }}
+          restore-keys: ${{ runner.os }}-maven
+      
       - name: Build Maven Package
         run: mvn -B clean package --file pom.xml -Dpg.user=$POSTGRES_USER -Dpg.password=$POSTGRES_PASSWORD
 
@@ -70,24 +77,25 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
+      - name: Setup JDK
+        uses: actions/setup-java@v1.4.3
+        with:
+           java-version: 11
+
       - name: Restore Build Target
         uses: actions/download-artifact@v2
         with:
           name: build_target
           path: prime-router/target
 
-      - name: Setup JDK
-        uses: actions/setup-java@v1.4.3
-        with:
-           java-version: 11
-
       - name: Generate New Docs
         run: './prime --generate-docs'
 
       - name: Check for Uncommited Docs
         id: check_changes
+        continue-on-error: true
         run: |
-          CHANGED_FILES=$(git diff docs --short)
+          CHANGED_FILES=$(git status --short docs)
           if [[ -n "$CHANGED_FILES" ]]; then
             echo "Updated documentation:"
             git diff docs
