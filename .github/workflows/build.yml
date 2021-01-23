@@ -99,21 +99,41 @@ jobs:
         id: check_changes
         continue-on-error: true
         run: |
+          DIFF=$(git diff docs)
           CHANGED_FILES=$(git status --short docs)
-          if [[ -n "$CHANGED_FILES" ]]; then
+          if [[ -n "$DIFF" ]]; then
             echo "Updated documentation:"
-            git diff docs
+            echo "$DIFF"
+            echo ::set-output name=diff::$DIFF
 
             # End with an error
             false
           fi
       
-      - name: Commit Changes
-        if: ${{ steps.check_changes.outcome == 'failure' }}
-        run: |
-          git config user.name 'GitHub Actions Bot'
-          git config user.email 'github.actions.bot@example.com'
+      # - name: Commit Changes
+      #   if: ${{ steps.check_changes.outcome == 'failure' }}
+      #   run: |
+      #     git config user.name 'GitHub Actions Bot'
+      #     git config user.email 'github.actions.bot@example.com'
 
-          git add docs
-          git commit -m 'Generate updated docs'
-          git push
+      #     git add docs
+      #     git commit -m 'Generate updated docs'
+      #     git push
+
+      - name: Add diff as PR comment
+        if: ${{ steps.check_changes.outcome == 'failure' }}
+        uses: peter-evans/create-or-update-comment@v1
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          issue-number: ${{ github.event.number }}
+          body: |
+            The changes you’ve made modify the documentation, but you haven’t
+            included new generated documentation in your commits.
+
+            Run `./prime --generate-docs` to generate updated documentation.
+
+            Expected changes:
+
+            ```diff
+            ${{ steps.check_changes.outputs.diff }}
+            ```
