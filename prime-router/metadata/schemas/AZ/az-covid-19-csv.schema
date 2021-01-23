@@ -79,7 +79,7 @@ elements:
         code: 2131-1
       - display: O
         code: UNK
-      - display: O      #  Asked, but unknown
+      - display: AU      #  Asked, but unknown
         code: ASKU
     csvFields:
     - name: Race
