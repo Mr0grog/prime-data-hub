@@ -74,6 +74,7 @@ jobs:
         uses: actions/download-artifact@v2
         with:
           name: build_target
+          path: prime-router/target
 
       - name: Log local information
         run: |
